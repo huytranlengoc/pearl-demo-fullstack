@@ -1,8 +1,11 @@
-from asyncio import exceptions
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from rest_framework import exceptions
+from rest_framework.permissions import IsAuthenticated
+
+from .authentication import generate_access_token, JWTAuthenication
 from .serializers import UserSerializer
 from .models import User
 
@@ -35,4 +38,29 @@ def login(request):
     if not user.check_password(password):
         raise exceptions.AuthenticationFailed('Incorrect password')
 
-    return Response('success')
+    response = Response()
+    token = generate_access_token(user)
+    response.set_cookie(key='jwt', value=token, httponly=True)
+    response.data = {
+        'jwt': token
+    }
+    return response
+
+@api_view(['POST'])
+def logout(request):
+    response = Response()
+    response.delete_cookie('jwt')
+    response.data = {
+        'message': 'success'
+    }
+    return response
+
+class AuthenticateUser(APIView):
+    authentication_classes = [JWTAuthenication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        serializer = UserSerializer(request.user)
+        return Response({
+            'data': serializer.data
+        })
