@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User
+from .models import User, Permission
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -14,3 +14,8 @@ class UserSerializer(serializers.ModelSerializer):
             instance.set_password(password)
         instance.save()
         return instance
+
+class PermissionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Permission
+        fields = ['id', 'name', 'description']
