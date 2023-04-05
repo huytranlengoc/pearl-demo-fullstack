@@ -7,7 +7,7 @@ from rest_framework.permissions import IsAuthenticated
 
 from .authentication import generate_access_token, JWTAuthenication
 from .serializers import UserSerializer, PermissionSerializer
-from .models import User
+from .models import User, Permission
 
 @api_view(['POST'])
 def register(request):
@@ -18,12 +18,6 @@ def register(request):
     serializer = UserSerializer(data=data)
     serializer.is_valid(raise_exception=True)
     serializer.save()
-    return Response(serializer.data)
-
-@api_view(['GET'])
-def users(request):
-    users = User.objects.all()
-    serializer = UserSerializer(users, many=True)
     return Response(serializer.data)
 
 @api_view(['POST'])
@@ -88,9 +82,9 @@ class RoleViewSet(viewsets.ViewSet):
 
     def create(self, request):
         pass
-    
+
     def update(self, request, pk=None):
         pass
-    
+
     def destroy(self, request, pk=None):
         pass

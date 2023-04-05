@@ -1,6 +1,11 @@
 from rest_framework import serializers
 from .models import User, Permission
 
+class PermissionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Permission
+        fields = '__all__'
+
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -15,7 +20,3 @@ class UserSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 
-class PermissionSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Permission
-        fields = ['id', 'name', 'description']
